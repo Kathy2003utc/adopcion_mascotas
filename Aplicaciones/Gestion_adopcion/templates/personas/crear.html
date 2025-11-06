@@ -1,0 +1,87 @@
+{% extends 'personas/plantilla.html' %}
+{% load static %}
+{% block contenido %} 
+
+<br><br><br>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-lg border-0 rounded-4">
+      <div class="card-body p-5" style="background-color: #feffff;">
+        <h2 class="text-center text-success mb-4">Nueva Persona</h2>
+        <hr class="mb-4">
+        <form id="frm_nueva_persona" method="post" action="{% url 'guardar_persona' %}">
+          {% csrf_token %}
+
+          <label for="nombres">Nombres</label>
+          <input type="text" name="nombres" id="nombres" class="form-control" required>
+          <br>
+
+          <label for="apellidos">Apellidos</label>
+          <input type="text" name="apellidos" id="apellidos" class="form-control" required>
+          <br>
+
+          <label for="cedula">Cédula</label>
+          <input type="text" name="cedula" id="cedula" class="form-control" maxlength="10" required>
+          <br>
+
+          <label for="telefono">Teléfono</label>
+          <input type="text" name="telefono" id="telefono" class="form-control">
+          <br>
+
+          <label for="direccion">Dirección</label>
+          <input type="text" name="direccion" id="direccion" class="form-control">
+          <br>
+
+          <label for="correo">Correo Electrónico</label>
+          <input type="email" name="correo" id="correo" class="form-control" required>
+          <br>
+
+          <div class="text-center mt-4">
+            <button class="btn btn-success btn-lg px-4 me-2 rounded-pill shadow" type="submit">
+              <i class="fa fa-save me-1"></i> Guardar
+            </button>
+            <a href="{% url 'lista_personas' %}" class="btn btn-outline-danger btn-lg px-4 rounded-pill shadow">
+              <i class="fa fa-times me-1"></i> Cancelar
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(document).ready(function () {
+  $("#frm_nueva_persona").validate({
+    rules: {
+      "nombres": { required: true, minlength: 2 },
+      "apellidos": { required: true, minlength: 2 },
+      "cedula": { required: true, digits: true, minlength: 10, maxlength: 10},
+      "telefono": { required: true, digits: true, minlength: 10, maxlength: 10 },
+      "direccion": { required: true, minlength: 5 },
+      "correo": { required: true, email: true }
+    },
+    messages: {
+      "nombres": { required: "Ingrese los nombres", minlength: "Mínimo 2 caracteres" },
+      "apellidos": { required: "Ingrese los apellidos", minlength: "Mínimo 2 caracteres" },
+      "cedula": { 
+        required: "Ingrese la cédula",
+        digits: "Sólo números",
+        minlength: "Debe tener 10 dígitos", 
+        maxlength: "Debe tener 10 dígitos",
+      },
+      "telefono": { 
+        required: "Ingrese el teléfono",
+        digits: "Sólo números",
+        minlength: "Debe tener 10 dígitos", 
+        maxlength: "Debe tener 10 dígitos",
+      },
+      "direccion": { required: "Ingrese la dirección", minlength: "Mínimo 5 caracteres" },
+      "correo": { required: "Ingrese el correo", email: "Ingrese un correo válido" }
+    }
+  });
+});
+</script>
+
+<br><br><br>
+{% endblock %}
