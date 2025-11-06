@@ -121,8 +121,15 @@
                 <span class="sidebar-mini-icon">
                   <i class="fa fa-ellipsis-h"></i>
                 </span>
-                <h4 class="text-section">Autografos de libros</h4>
+                <h4 class="text-section">Adopción de mascotas</h4>
               </li>
+                <li class="nav-item">
+                <a href="{% url 'reportes' %}">
+                    <i class="fas fa-chart-bar"></i>
+                    <p>Dashboard / Reportes</p>
+                </a>
+                </li>
+
               <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#base">
                   <i class="fas fa-list"></i>
@@ -271,19 +278,15 @@
     </script>
 
     {% if messages %}
-    {% for mensaje in messages %}
-    <script>
-        Swal.fire({
-          title: "{% if mensaje.tags == 'success' %}Éxito{% elif mensaje.tags == 'error' %}Error{% elif mensaje.tags == 'warning' %}Alerta{% else %}Información{% endif %}",
-          text: "{{ mensaje|escapejs }}",
-          icon: "{% if mensaje.tags == 'success' %}success{% elif mensaje.tags == 'error' %}error{% elif mensaje.tags == 'warning' %}warning{% else %}info{% endif %}",
-          confirmButtonText: "Aceptar",
-          customClass: {
-            popup: 'swal2-border-radius'
-          }
-        });
-    </script>
-    {% endfor %}
+      {% for mensaje in messages %}
+        <script>
+            swal({
+              title: "CONFIRMACIÓN",
+              text: "{{ mensaje }}",
+              icon: "success",
+            });
+        </script>
+      {% endfor %}
     {% endif %}
 
     <style>
