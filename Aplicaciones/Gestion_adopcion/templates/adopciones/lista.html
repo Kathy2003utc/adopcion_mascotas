@@ -1,97 +1,74 @@
-{% extends 'plantilla.html' %}
+{% extends 'personas/plantilla.html' %}
 {% load static %}
 
 {% block contenido %}
 <section class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-lg-10">
+    <div class="col-lg-12">
       <h1 class="mb-4 text-center">Listado de Adopciones</h1>
-      
       <div class="text-end mb-3">
-        <a href="{% url 'nueva_adopcion' %}" class="btn btn-success">
-          <i class="bi bi-plus-circle"></i> Registrar Adopción
+        <a href="{% url 'crear_adopcion' %}" class="btn btn-success">
+          <i class="bi bi-plus-circle"></i> Nueva Adopción
         </a>
       </div>
 
-      <div class="table-responsive">
-        <table id="tbl_adopciones" class="table table-bordered table-striped table-hover align-middle">
-          <thead class="table-success text-center">
+      <table id="tbl_adopciones" class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-success text-center">
+          <tr>
+            <th>ID</th>
+            <th>Persona</th>
+            <th>Mascota</th>
+            <th>Fecha Adopción</th>
+            <th>Observaciones</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in Adopciones %}
             <tr>
-              <th>ID</th>
-              <th>Persona</th>
-              <th>Mascota</th>
-              <th>Foto</th>
-              <th>Fecha de Adopción</th>
-              <th>Observaciones</th>
-              <th>Acciones</th>
+              <td>{{ a.id }}</td>
+              <td>{{ a.persona.nombres }} {{ a.persona.apellidos }}</td>
+              <td>{{ a.mascota.nombre }} ({{ a.mascota.especie }})</td>
+              <td>{{ a.fecha_adopcion }}</td>
+              <td>{{ a.observaciones|default:"-" }}</td>
+              <td class="text-center">
+                <a href="{% url 'editar_adopcion' a.id %}" class="btn btn-outline-warning btn-sm" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="confirmarEliminacion('{{ a.id }}')">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {% for adopcion in adopciones %}
-              <tr>
-                <td>{{ adopcion.id }}</td>
-                <td>{{ adopcion.persona.nombres }} {{ adopcion.persona.apellidos }}</td>
-                <td>{{ adopcion.mascota.nombre }} ({{ adopcion.mascota.especie }})</td>
-
-                <!-- Foto de la mascota -->
-                <td class="text-center">
-                  {% if adopcion.mascota.foto %}
-                    <img src="{{ adopcion.mascota.foto.url }}" alt="Foto de mascota" height="80px" class="rounded">
-                  {% else %}
-                    <span class="text-muted">Sin foto</span>
-                  {% endif %}
-                </td>
-
-                <td class="text-center">{{ adopcion.fecha_adopcion }}</td>
-                <td>{{ adopcion.observaciones|default:"—" }}</td>
-
-                <!-- Acciones -->
-                <td class="text-center">
-                  <a href="{% url 'editar_adopcion' adopcion.id %}" class="btn btn-outline-warning btn-sm" title="Editar">
-                    <i class="bi bi-pencil"></i>
-                  </a>
-                  <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="confirmarEliminacion('{{ adopcion.id }}')">
-                    <i class="bi bi-trash"></i>
-                  </a>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
 
-<!-- Script de confirmación -->
 <script>
-  function confirmarEliminacion(id) {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¡Esta acción no se puede deshacer!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = `/eliminarAdopcion/${id}`;
-      }
-    });
-  }
-</script>
-
-<!-- Configuración de DataTable -->
-<script>
-  $('#tbl_adopciones').DataTable({
-      dom: 'Bfrtip',
-      buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-      order: [[0, 'desc']],  // Ordenar por ID descendente
-      language: {
-          url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
-      }
+function confirmarEliminacion(id) {
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: '¡Esta acción no se puede deshacer!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = `{% url 'eliminar_adopcion' 0 %}`.replace('0', id);
+    }
   });
+}
+
+$('#tbl_adopciones').DataTable({
+  dom: 'Bfrtip',
+  buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+  language: { url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json' }
+});
 </script>
 {% endblock %}
