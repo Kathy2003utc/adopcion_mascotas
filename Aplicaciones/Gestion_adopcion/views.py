@@ -39,11 +39,18 @@ def guardarPersona(request):
             return redirect('crear_persona')
     else:
         return redirect('crear_persona')
+
 # Eliminar persona
 def eliminarPersona(request, id):
     personaEliminar = Persona.objects.get(id=id)
-    personaEliminar.delete()
-    messages.success(request, "Persona eliminada exitosamente")
+    
+    # Verificar si la persona tiene adopciones
+    if Adopcion.objects.filter(persona=personaEliminar).exists():
+        messages.error(request, "No se puede eliminar esta persona porque tiene adopciones registradas.")
+    else:
+        personaEliminar.delete()
+        messages.success(request, "Persona eliminada exitosamente")
+    
     return redirect('lista_personas')
 
 # Mostrar formulario para editar persona
@@ -128,8 +135,14 @@ def guardarMascota(request):
 # Eliminar mascota
 def eliminarMascota(request, id):
     mascotaEliminar = Mascota.objects.get(id=id)
-    mascotaEliminar.delete()
-    messages.success(request, "Mascota eliminada exitosamente")
+    
+    # Verificar si la mascota tiene adopciones
+    if Adopcion.objects.filter(mascota=mascotaEliminar).exists():
+        messages.error(request, "No se puede eliminar esta mascota porque está asociada a una adopción.")
+    else:
+        mascotaEliminar.delete()
+        messages.success(request, "Mascota eliminada exitosamente")
+    
     return redirect('lista_mascotas')
 
 # Mostrar formulario para editar mascota
