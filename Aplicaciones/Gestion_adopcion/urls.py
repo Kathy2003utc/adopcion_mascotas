@@ -17,4 +17,6 @@ urlpatterns = [
     path('mascotas/editar/<int:id>/', views.editarMascota, name='editar_mascota'),
     path('mascotas/eliminar/<int:id>/', views.eliminarMascota, name='eliminar_mascota'),
     path('mascotas/actualizar/', views.procesarEdicionMascota, name='actualizar_mascota'),
+
+    
 ]

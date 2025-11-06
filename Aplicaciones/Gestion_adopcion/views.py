@@ -233,30 +233,47 @@ def procesarEdicionMascota(request):
     else:
         return redirect('lista_mascotas')
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Persona, Mascota, Adopcion
+from django.db import IntegrityError
 
-# Al crear una adopción
+
+# LISTAR ADOPCIONES
+def listaAdopciones(request):
+    adopciones = Adopcion.objects.all()
+    return render(request, "adopciones/lista.html", {'Adopciones': adopciones})
+
+
+# CREAR NUEVA ADOPCION
+def nuevaAdopcion(request):
+    personas = Persona.objects.all()
+    mascotas = Mascota.objects.all()
+    return render(request, "adopciones/crear.html", {'Personas': personas, 'Mascotas': mascotas})
+
+# GUARDAR NUEVA ADOPCION
 def guardarAdopcion(request):
     if request.method == "POST":
         persona_id = request.POST['persona']
         mascota_id = request.POST['mascota']
         observaciones = request.POST.get('observaciones', '')
 
+        persona = Persona.objects.get(id=persona_id)
         mascota = Mascota.objects.get(id=mascota_id)
 
-        # Crear adopción solo si la mascota está disponible
+        # Verificar disponibilidad
         if mascota.estado != 'Disponible':
             messages.error(request, "La mascota ya ha sido adoptada")
             return redirect('crear_adopcion')
 
-        persona = Persona.objects.get(id=persona_id)
-
+        # Crear adopción
         Adopcion.objects.create(
             persona=persona,
             mascota=mascota,
             observaciones=observaciones
         )
 
-        # Cambiar estado automáticamente
+        # Cambiar estado de la mascota
         mascota.estado = 'Adoptado'
         mascota.save()
 
@@ -266,7 +283,57 @@ def guardarAdopcion(request):
         return redirect('crear_adopcion')
 
 
-# Al eliminar una adopción
+# EDITAR ADOPCION
+def editarAdopcion(request, id):
+    adopcionEditar = Adopcion.objects.get(id=id)
+    personas = Persona.objects.all()
+    mascotas = Mascota.objects.all()
+    return render(request, "adopciones/editar.html", {
+        'adopcionEditar': adopcionEditar,
+        'Personas': personas,
+        'Mascotas': mascotas
+    })
+
+
+# ACTUALIZAR ADOPCION
+def actualizarAdopcion(request):
+    if request.method == "POST":
+        id = request.POST['id']
+        persona_id = request.POST['persona']
+        mascota_id = request.POST['mascota']
+        observaciones = request.POST.get('observaciones', '')
+
+        adopcion = Adopcion.objects.get(id=id)
+        nueva_persona = Persona.objects.get(id=persona_id)
+        nueva_mascota = Mascota.objects.get(id=mascota_id)
+        mascota_anterior = adopcion.mascota
+
+        # Restaurar estado de mascota anterior
+        mascota_anterior.estado = 'Disponible'
+        mascota_anterior.save()
+
+        # Verificar disponibilidad de la nueva mascota
+        if nueva_mascota.estado != 'Disponible':
+            messages.error(request, "La mascota seleccionada ya ha sido adoptada")
+            return redirect('editar_adopcion', id=id)
+
+        # Actualizar adopción
+        adopcion.persona = nueva_persona
+        adopcion.mascota = nueva_mascota
+        adopcion.observaciones = observaciones
+        adopcion.save()
+
+        # Cambiar estado de la nueva mascota
+        nueva_mascota.estado = 'Adoptado'
+        nueva_mascota.save()
+
+        messages.success(request, "Adopción actualizada exitosamente")
+        return redirect('lista_adopciones')
+    else:
+        return redirect('lista_adopciones')
+
+
+# ELIMINAR ADOPCION
 def eliminarAdopcion(request, id):
     adopcion = Adopcion.objects.get(id=id)
     mascota = adopcion.mascota
