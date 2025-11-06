@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Persona, Mascota, Adopcion
 from django.db import IntegrityError
+from django.db.models import Count
 
 # Listar personas
 def listaPersonas(request):
@@ -274,24 +275,26 @@ def guardarAdopcion(request):
         persona = Persona.objects.get(id=persona_id)
         mascota = Mascota.objects.get(id=mascota_id)
 
-        # Verificar disponibilidad
-        if mascota.estado != 'Disponible':
-            messages.error(request, "La mascota ya ha sido adoptada")
+        # Verificar si la mascota ya tiene adopción
+        if Adopcion.objects.filter(mascota=mascota).exists():
+            messages.error(request, "La mascota ya ha sido adoptada.")
             return redirect('crear_adopcion')
 
-        # Crear adopción
-        Adopcion.objects.create(
-            persona=persona,
-            mascota=mascota,
-            observaciones=observaciones
-        )
+        try:
+            Adopcion.objects.create(
+                persona=persona,
+                mascota=mascota,
+                observaciones=observaciones
+            )
+            # Cambiar estado de la mascota
+            mascota.estado = 'Adoptado'
+            mascota.save()
 
-        # Cambiar estado de la mascota
-        mascota.estado = 'Adoptado'
-        mascota.save()
-
-        messages.success(request, "Adopción registrada exitosamente")
-        return redirect('lista_adopciones')
+            messages.success(request, "Adopción registrada exitosamente")
+            return redirect('lista_adopciones')
+        except IntegrityError:
+            messages.error(request, "No se pudo registrar la adopción porque la mascota ya tiene una adopción.")
+            return redirect('crear_adopcion')
     else:
         return redirect('crear_adopcion')
 
@@ -321,14 +324,15 @@ def actualizarAdopcion(request):
         nueva_mascota = Mascota.objects.get(id=mascota_id)
         mascota_anterior = adopcion.mascota
 
-        # Restaurar estado de mascota anterior
-        mascota_anterior.estado = 'Disponible'
-        mascota_anterior.save()
-
-        # Verificar disponibilidad de la nueva mascota
-        if nueva_mascota.estado != 'Disponible':
+        # Verificar si la nueva mascota ya tiene adopción, ignorando la actual
+        if nueva_mascota != mascota_anterior and Adopcion.objects.filter(mascota=nueva_mascota).exists():
             messages.error(request, "La mascota seleccionada ya ha sido adoptada")
             return redirect('editar_adopcion', id=id)
+
+        # Restaurar estado de mascota anterior si se cambió
+        if nueva_mascota != mascota_anterior:
+            mascota_anterior.estado = 'Disponible'
+            mascota_anterior.save()
 
         # Actualizar adopción
         adopcion.persona = nueva_persona
@@ -359,3 +363,41 @@ def eliminarAdopcion(request, id):
 
     messages.success(request, "Adopción eliminada y estado de mascota actualizado")
     return redirect('lista_adopciones')
+
+def reportes(request):
+    # Número de adopciones por persona
+    adopciones_persona = Persona.objects.annotate(total_adopciones=Count('adopciones'))
+    personas = [p.nombres + " " + p.apellidos for p in adopciones_persona]
+    total_adopciones = [p.total_adopciones for p in adopciones_persona]
+
+    # Número de mascotas por estado
+    mascotas_estado = Mascota.objects.values('estado').annotate(total=Count('id'))
+    estados = [m['estado'] for m in mascotas_estado]
+    total_mascotas_estado = [m['total'] for m in mascotas_estado]
+
+    # Número de mascotas por especie
+    mascotas_especie = Mascota.objects.values('especie').annotate(total=Count('id'))
+    especies = [m['especie'] for m in mascotas_especie]
+    total_mascotas_especie = [m['total'] for m in mascotas_especie]
+
+    # Número de adopciones por especie
+    adopciones_especie = Mascota.objects.filter(estado='Adoptado') \
+        .values('especie') \
+        .annotate(total=Count('adopciones')) \
+        .order_by('-total')
+
+    especies_adoptadas = [m['especie'] for m in adopciones_especie]
+    total_adopciones_especie = [m['total'] for m in adopciones_especie]
+
+    context = {
+        'personas': personas,
+        'total_adopciones': total_adopciones,
+        'estados': estados,
+        'total_mascotas_estado': total_mascotas_estado,
+        'especies': especies,
+        'total_mascotas_especie': total_mascotas_especie,
+        'especies_adoptadas': especies_adoptadas,
+        'total_adopciones_especie': total_adopciones_especie,
+    }
+
+    return render(request, "reportes/dashboard.html", context)

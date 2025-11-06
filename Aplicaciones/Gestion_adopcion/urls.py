@@ -25,4 +25,8 @@ urlpatterns = [
     path('adopciones/editar/<int:id>/', views.editarAdopcion, name='editar_adopcion'),
     path('adopciones/actualizar/', views.actualizarAdopcion, name='actualizar_adopcion'),
     path('adopciones/eliminar/<int:id>/', views.eliminarAdopcion, name='eliminar_adopcion'),
+
+    # Reportes
+    path('reportes/', views.reportes, name='reportes'),
+
 ]
