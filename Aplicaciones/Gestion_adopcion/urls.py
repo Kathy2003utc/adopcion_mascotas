@@ -18,5 +18,11 @@ urlpatterns = [
     path('mascotas/eliminar/<int:id>/', views.eliminarMascota, name='eliminar_mascota'),
     path('mascotas/actualizar/', views.procesarEdicionMascota, name='actualizar_mascota'),
 
-    
+    # Adopciones
+    path('adopciones/', views.listaAdopciones, name='lista_adopciones'),
+    path('adopciones/crear/', views.nuevaAdopcion, name='crear_adopcion'),
+    path('adopciones/guardar/', views.guardarAdopcion, name='guardar_adopcion'),
+    path('adopciones/editar/<int:id>/', views.editarAdopcion, name='editar_adopcion'),
+    path('adopciones/actualizar/', views.actualizarAdopcion, name='actualizar_adopcion'),
+    path('adopciones/eliminar/<int:id>/', views.eliminarAdopcion, name='eliminar_adopcion'),
 ]
