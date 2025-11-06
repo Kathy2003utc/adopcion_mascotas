@@ -44,12 +44,9 @@
           <textarea name="descripcion" id="descripcion" class="form-control">{{ mascotaEditar.descripcion }}</textarea>
           <br>
 
+          <input type="hidden" name="estado" value="Disponible">
           <label for="estado">Estado</label>
-          <select name="estado" id="estado" class="form-control">
-            <option value="Disponible" {% if mascotaEditar.estado == 'Disponible' %}selected{% endif %}>Disponible</option>
-            <option value="Adoptado" {% if mascotaEditar.estado == 'Adoptado' %}selected{% endif %}>Adoptado</option>
-            <option value="En revisión" {% if mascotaEditar.estado == 'En revisión' %}selected{% endif %}>En revisión</option>
-          </select>
+          <input type="text" class="form-control" value="{{ mascotaEditar.estado }}" readonly>
           <br>
 
           <label for="foto">Foto</label>

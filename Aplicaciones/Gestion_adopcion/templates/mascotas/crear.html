@@ -45,12 +45,9 @@
           <textarea name="descripcion" id="descripcion" class="form-control"></textarea>
           <br>
 
+          <input type="hidden" name="estado" value="Disponible">
           <label for="estado">Estado</label>
-          <select name="estado" id="estado" class="form-control">
-            <option value="Disponible" selected>Disponible</option>
-            <option value="Adoptado">Adoptado</option>
-            <option value="En revisión">En revisión</option>
-          </select>
+          <input type="text" class="form-control" value="Disponible" readonly>
           <br>
 
           <label for="foto">Foto</label>
