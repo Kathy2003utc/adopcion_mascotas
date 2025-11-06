@@ -1,0 +1,72 @@
+{% extends 'personas/plantilla.html' %}
+{% load static %}
+{% block contenido %}
+
+<br><br><br>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-lg border-0 rounded-4">
+      <div class="card-body p-5" style="background-color: #feffff;">
+        <h2 class="text-center text-success mb-4">Editar Persona</h2>
+        <hr class="mb-4">
+        <form id="frm_editar_persona" method="post" action="{% url 'actualizar_persona' %}">
+          {% csrf_token %}
+          <input type="hidden" name="id" value="{{ personaEditar.id }}">
+
+          <label for="nombres">Nombres</label>
+          <input type="text" name="nombres" id="nombres" class="form-control" value="{{ personaEditar.nombres }}">
+          <br>
+
+          <label for="apellidos">Apellidos</label>
+          <input type="text" name="apellidos" id="apellidos" class="form-control" value="{{ personaEditar.apellidos }}">
+          <br>
+
+          <label for="cedula">Cédula</label>
+          <input type="text" name="cedula" id="cedula" class="form-control" value="{{ personaEditar.cedula }}">
+          <br>
+
+          <label for="telefono">Teléfono</label>
+          <input type="text" name="telefono" id="telefono" class="form-control" value="{{ personaEditar.telefono }}">
+          <br>
+
+          <label for="direccion">Dirección</label>
+          <input type="text" name="direccion" id="direccion" class="form-control" value="{{ personaEditar.direccion }}">
+          <br>
+
+          <label for="correo">Correo Electrónico</label>
+          <input type="email" name="correo" id="correo" class="form-control" value="{{ personaEditar.correo }}">
+          <br>
+
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success btn-lg px-4 me-2 rounded-pill shadow">
+              <i class="fa fa-save me-1"></i> Actualizar
+            </button>
+            <a href="{% url 'lista_personas' %}" class="btn btn-outline-danger btn-lg px-4 rounded-pill shadow">
+              <i class="fa fa-times me-1"></i> Cancelar
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$("#frm_editar_persona").validate({
+  rules: {
+    "nombres": { required: true, minlength: 2 },
+    "apellidos": { required: true, minlength: 2 },
+    "cedula": { required: true, minlength: 10, maxlength: 10 },
+    "correo": { required: true, email: true }
+  },
+  messages: {
+    "nombres": { required: "Ingrese los nombres" },
+    "apellidos": { required: "Ingrese los apellidos" },
+    "cedula": { required: "Ingrese la cédula", minlength: "Debe tener 10 dígitos", maxlength: "Debe tener 10 dígitos" },
+    "correo": { required: "Ingrese el correo", email: "Ingrese un correo válido" }
+  }
+});
+</script>
+
+<br><br><br>
+{% endblock %}
