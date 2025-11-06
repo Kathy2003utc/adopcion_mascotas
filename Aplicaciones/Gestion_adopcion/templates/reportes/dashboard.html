@@ -2,22 +2,18 @@
 {% block contenido %}
 <h2 class="text-center">Dashboard de Adopciones</h2>
 
-<!-- Grafica 1: Adopciones por Persona -->
 <div style="width: 80%; margin: auto; margin-top: 30px;">
     <canvas id="adopcionesPersona"></canvas>
 </div>
 
-<!-- Grafica 2: Mascotas por Estado -->
 <div style="width: 80%; margin: auto; margin-top: 50px;">
     <canvas id="mascotasEstado"></canvas>
 </div>
 
-<!-- Grafica 3: Mascotas por Especie -->
 <div style="width: 80%; margin: auto; margin-top: 50px;">
     <canvas id="mascotasEspecie"></canvas>
 </div>
 
-<!-- Grafica 4: Adopciones por Especie -->
 <div style="width: 80%; margin: auto; margin-top: 50px; margin-bottom: 50px;">
     <canvas id="adopcionesEspecie"></canvas>
 </div>
@@ -30,9 +26,8 @@
 {{ especies|json_script:"especies_data" }}
 {{ total_mascotas_especie|json_script:"mascotas_especie_data" }}
 {{ especies_adoptadas|json_script:"especies_adoptadas_data" }}
-{{ total_adopciones_especie|json_script:"adopciones_especie_data" }}
+{{ total_adopciones_especie|json_script:"total_adopciones_especie_data" }}
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Leer datos desde json_script
@@ -43,7 +38,7 @@
     const especies = JSON.parse(document.getElementById('especies_data').textContent);
     const total_mascotas_especie = JSON.parse(document.getElementById('mascotas_especie_data').textContent);
     const especies_adoptadas = JSON.parse(document.getElementById('especies_adoptadas_data').textContent);
-    const total_adopciones_especie = JSON.parse(document.getElementById('adopciones_especie_data').textContent);
+    const total_adopciones_especie = JSON.parse(document.getElementById('total_adopciones_especie_data').textContent);
 
     // Grafica 1: Adopciones por Persona
     new Chart(document.getElementById('adopcionesPersona'), {

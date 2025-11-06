@@ -49,10 +49,12 @@
           <input type="text" class="form-control" value="{{ mascotaEditar.estado }}" readonly>
           <br>
 
-          <label for="foto">Foto</label>
-          <input type="file" name="foto" id="foto" class="form-control" accept="image/*">
+          <label for="foto" class="form-label fw-semibold">Foto de la mascota</label>
+          <input type="file" name="foto" id="foto" class="form-control">
           {% if mascotaEditar.foto %}
-            <img src="{{ mascotaEditar.foto.url }}" alt="{{ mascotaEditar.nombre }}" width="80" class="mt-2">
+            <div class="mt-3 text-center">
+              <img src="{{ mascotaEditar.foto.url }}" alt="Imagen actual" class="img-thumbnail" width="150">
+            </div>
           {% endif %}
           <br>
 
@@ -84,6 +86,16 @@ $("#frm_editar_mascota").validate({
     "edad": { required: "Ingrese la edad", digits: "Sólo números", min: "Valor mínimo 0" },
     "sexo": { required: "Seleccione el sexo" }
   }
+});
+</script>
+
+<script>
+$("#foto").fileinput({
+    language: "es",
+    allowedFileExtensions: ["png", "jpg", "jpeg", "gif"],
+    showCaption: false,
+    dropZoneEnabled: true,
+    showClose: false
 });
 </script>
 

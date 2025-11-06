@@ -367,7 +367,7 @@ def eliminarAdopcion(request, id):
 def reportes(request):
     # Número de adopciones por persona
     adopciones_persona = Persona.objects.annotate(total_adopciones=Count('adopciones'))
-    personas = [p.nombres + " " + p.apellidos for p in adopciones_persona]
+    personas = [f"{p.nombres} {p.apellidos}" for p in adopciones_persona]
     total_adopciones = [p.total_adopciones for p in adopciones_persona]
 
     # Número de mascotas por estado
@@ -380,12 +380,11 @@ def reportes(request):
     especies = [m['especie'] for m in mascotas_especie]
     total_mascotas_especie = [m['total'] for m in mascotas_especie]
 
-    # Número de adopciones por especie
-    adopciones_especie = Mascota.objects.filter(estado='Adoptado') \
+    # Número de adopciones por especie (qué tipo de mascota se adopta más rápido)
+    adopciones_especie = Mascota.objects.filter(adopcion__isnull=False) \
         .values('especie') \
-        .annotate(total=Count('adopciones')) \
+        .annotate(total=Count('adopcion')) \
         .order_by('-total')
-
     especies_adoptadas = [m['especie'] for m in adopciones_especie]
     total_adopciones_especie = [m['total'] for m in adopciones_especie]
 
@@ -399,5 +398,4 @@ def reportes(request):
         'especies_adoptadas': especies_adoptadas,
         'total_adopciones_especie': total_adopciones_especie,
     }
-
     return render(request, "reportes/dashboard.html", context)

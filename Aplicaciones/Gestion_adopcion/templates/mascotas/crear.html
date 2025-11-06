@@ -51,8 +51,9 @@
           <br>
 
           <label for="foto">Foto</label>
-          <input type="file" name="foto" id="foto" class="form-control" accept="image/*">
+          <input id="foto" name="foto" type="file" class="file" accept="image/*">
           <br>
+
 
           <div class="text-center mt-4">
             <button class="btn btn-success btn-lg px-4 me-2 rounded-pill shadow" type="submit">
@@ -87,5 +88,14 @@ $(document).ready(function () {
 });
 </script>
 
+<script>
+$("#foto").fileinput({
+    language: "es",
+    allowedFileExtensions: ["png", "jpg", "jpeg", "gif"],
+    showCaption: false,
+    dropZoneEnabled: true,
+    showClose: false
+});
+</script>
 <br><br><br>
 {% endblock %}
