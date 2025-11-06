@@ -1,0 +1,94 @@
+{% extends 'personas/plantilla.html' %}
+{% load static %}
+{% block contenido %}
+
+<br><br><br>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-lg border-0 rounded-4">
+      <div class="card-body p-5" style="background-color: #feffff;">
+        <h2 class="text-center text-success mb-4">Editar Mascota</h2>
+        <hr class="mb-4">
+        <form id="frm_editar_mascota" method="post" action="{% url 'actualizar_mascota' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="id" value="{{ mascotaEditar.id }}">
+
+          <label for="nombre">Nombre</label>
+          <input type="text" name="nombre" id="nombre" class="form-control" value="{{ mascotaEditar.nombre }}">
+          <br>
+
+          <label for="especie">Especie</label>
+          <select name="especie" id="especie" class="form-control">
+            <option value="Perro" {% if mascotaEditar.especie == 'Perro' %}selected{% endif %}>Perro</option>
+            <option value="Gato" {% if mascotaEditar.especie == 'Gato' %}selected{% endif %}>Gato</option>
+            <option value="Otro" {% if mascotaEditar.especie == 'Otro' %}selected{% endif %}>Otro</option>
+          </select>
+          <br>
+
+          <label for="raza">Raza</label>
+          <input type="text" name="raza" id="raza" class="form-control" value="{{ mascotaEditar.raza }}">
+          <br>
+
+          <label for="edad">Edad (años)</label>
+          <input type="number" name="edad" id="edad" class="form-control" value="{{ mascotaEditar.edad }}" min="0">
+          <br>
+
+          <label for="sexo">Sexo</label>
+          <select name="sexo" id="sexo" class="form-control">
+            <option value="Macho" {% if mascotaEditar.sexo == 'Macho' %}selected{% endif %}>Macho</option>
+            <option value="Hembra" {% if mascotaEditar.sexo == 'Hembra' %}selected{% endif %}>Hembra</option>
+          </select>
+          <br>
+
+          <label for="descripcion">Descripción</label>
+          <textarea name="descripcion" id="descripcion" class="form-control">{{ mascotaEditar.descripcion }}</textarea>
+          <br>
+
+          <label for="estado">Estado</label>
+          <select name="estado" id="estado" class="form-control">
+            <option value="Disponible" {% if mascotaEditar.estado == 'Disponible' %}selected{% endif %}>Disponible</option>
+            <option value="Adoptado" {% if mascotaEditar.estado == 'Adoptado' %}selected{% endif %}>Adoptado</option>
+            <option value="En revisión" {% if mascotaEditar.estado == 'En revisión' %}selected{% endif %}>En revisión</option>
+          </select>
+          <br>
+
+          <label for="foto">Foto</label>
+          <input type="file" name="foto" id="foto" class="form-control" accept="image/*">
+          {% if mascotaEditar.foto %}
+            <img src="{{ mascotaEditar.foto.url }}" alt="{{ mascotaEditar.nombre }}" width="80" class="mt-2">
+          {% endif %}
+          <br>
+
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success btn-lg px-4 me-2 rounded-pill shadow">
+              <i class="fa fa-save me-1"></i> Actualizar
+            </button>
+            <a href="{% url 'lista_mascotas' %}" class="btn btn-outline-danger btn-lg px-4 rounded-pill shadow">
+              <i class="fa fa-times me-1"></i> Cancelar
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$("#frm_editar_mascota").validate({
+  rules: {
+    "nombre": { required: true, minlength: 2 },
+    "especie": { required: true },
+    "edad": { required: true, digits: true, min: 0 },
+    "sexo": { required: true }
+  },
+  messages: {
+    "nombre": { required: "Ingrese el nombre", minlength: "Mínimo 2 caracteres" },
+    "especie": { required: "Seleccione la especie" },
+    "edad": { required: "Ingrese la edad", digits: "Sólo números", min: "Valor mínimo 0" },
+    "sexo": { required: "Seleccione el sexo" }
+  }
+});
+</script>
+
+<br><br><br>
+{% endblock %}
