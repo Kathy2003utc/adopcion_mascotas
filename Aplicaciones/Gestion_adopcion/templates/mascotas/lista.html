@@ -21,6 +21,7 @@
             <th>Raza</th>
             <th>Edad</th>
             <th>Sexo</th>
+            <th>Descripción</th>
             <th>Estado</th>
             <th>Fecha Ingreso</th>
             <th>Foto</th>
@@ -29,31 +30,32 @@
         </thead>
         <tbody>
           {% for mascota in Mascotas %}
-          <tr>
-            <td>{{ mascota.id }}</td>
-            <td>{{ mascota.nombre }}</td>
-            <td>{{ mascota.especie }}</td>
-            <td>{{ mascota.raza|default:"-" }}</td>
-            <td>{{ mascota.edad }}</td>
-            <td>{{ mascota.sexo }}</td>
-            <td>{{ mascota.estado }}</td>
-            <td>{{ mascota.fecha_ingreso }}</td>
-            <td>
-              {% if mascota.foto %}
-                <img src="{{ mascota.foto.url }}" alt="Foto" width="60">
-              {% else %}
-                -
-              {% endif %}
-            </td>
-            <td class="text-center">
-              <a href="{% url 'editar_mascota' mascota.id %}" class="btn btn-outline-warning btn-sm" title="Editar">
-                <i class="bi bi-pencil"></i>
-              </a>
-              <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="confirmarEliminacion('{{ mascota.id }}')">
-                <i class="bi bi-trash"></i>
-              </a>
-            </td>
-          </tr>
+            <tr>
+              <td>{{ mascota.id }}</td>
+              <td>{{ mascota.nombre }}</td>
+              <td>{{ mascota.especie }}</td>
+              <td>{{ mascota.raza|default:"-" }}</td>
+              <td>{{ mascota.edad }}</td>
+              <td>{{ mascota.sexo }}</td>
+              <td>{{ mascota.descripcion|default:"-" }}</td>
+              <td>{{ mascota.estado }}</td>
+              <td>{{ mascota.fecha_ingreso }}</td>
+              <td>
+                {% if mascota.foto %}
+                  <img src="{{ mascota.foto.url }}" alt="{{ mascota.nombre }}" width="60">
+                {% else %}
+                  -
+                {% endif %}
+              </td>
+              <td class="text-center">
+                <a href="{% url 'editar_mascota' mascota.id %}" class="btn btn-outline-warning btn-sm" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="confirmarEliminacion('{{ mascota.id }}')">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </td>
+            </tr>
           {% endfor %}
         </tbody>
       </table>
@@ -79,20 +81,22 @@ function confirmarEliminacion(id) {
   });
 }
 
-$(document).ready(function () {
-  $('#tbl_mascotas').DataTable({
-    dom: 'Bfrtip',
-    buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-    language: { url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json' },
-    scrollX: false,
-    autoWidth: false,
-    columnDefs: [{ orderable: false, targets: -1 }]
-  });
+$('#tbl_mascotas').DataTable({
+  dom: 'Bfrtip',
+  buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+  language: { url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json' }
 });
 </script>
 
 <style>
-  table#tbl_mascotas { width: 100%; table-layout: auto; }
-  table#tbl_mascotas th, table#tbl_mascotas td { white-space: nowrap; text-align: center; }
+table#tbl_mascotas {
+  width: 100%;
+  table-layout: auto;
+}
+table#tbl_mascotas th, table#tbl_mascotas td {
+  white-space: nowrap;
+  text-align: center;
+}
 </style>
+
 {% endblock %}
