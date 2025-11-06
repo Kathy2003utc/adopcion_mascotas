@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Persona, Mascota
+from .models import Persona, Mascota, Adopcion
 from django.db import IntegrityError
 
 # Listar personas
@@ -168,3 +168,114 @@ def procesarEdicionMascota(request):
         return redirect('lista_mascotas')
     else:
         return redirect('lista_mascotas')
+    
+# Guardar nueva mascota
+def guardarMascota(request):
+    if request.method == "POST":
+        nombre = request.POST['nombre']
+        especie = request.POST['especie']
+        raza = request.POST.get('raza', '')
+        edad = request.POST['edad']
+        sexo = request.POST['sexo']
+        descripcion = request.POST.get('descripcion', '')
+        foto = request.FILES.get('foto', None)
+
+        # Siempre disponible al crear
+        Mascota.objects.create(
+            nombre=nombre,
+            especie=especie,
+            raza=raza,
+            edad=edad,
+            sexo=sexo,
+            descripcion=descripcion,
+            estado='Disponible',
+            foto=foto
+        )
+        messages.success(request, "Mascota registrada exitosamente")
+        return redirect('lista_mascotas')
+    else:
+        return redirect('crear_mascota')
+
+
+# Procesar edición de mascota
+def procesarEdicionMascota(request):
+    if request.method == "POST":
+        id = request.POST['id']
+        nombre = request.POST['nombre']
+        especie = request.POST['especie']
+        raza = request.POST.get('raza', '')
+        edad = request.POST['edad']
+        sexo = request.POST['sexo']
+        descripcion = request.POST.get('descripcion', '')
+        foto = request.FILES.get('foto', None)
+
+        mascota = Mascota.objects.get(id=id)
+        mascota.nombre = nombre
+        mascota.especie = especie
+        mascota.raza = raza
+        mascota.edad = edad
+        mascota.sexo = sexo
+        mascota.descripcion = descripcion
+
+        # No permitir cambiar el estado manualmente, se gestiona automáticamente
+        if foto:
+            mascota.foto = foto
+
+        # Actualizar estado automáticamente según si tiene adopción
+        if hasattr(mascota, 'adopcion'):
+            mascota.estado = 'Adoptado'
+        else:
+            mascota.estado = 'Disponible'
+
+        mascota.save()
+        messages.success(request, "Mascota actualizada exitosamente")
+        return redirect('lista_mascotas')
+    else:
+        return redirect('lista_mascotas')
+
+
+# Al crear una adopción
+def guardarAdopcion(request):
+    if request.method == "POST":
+        persona_id = request.POST['persona']
+        mascota_id = request.POST['mascota']
+        observaciones = request.POST.get('observaciones', '')
+
+        mascota = Mascota.objects.get(id=mascota_id)
+
+        # Crear adopción solo si la mascota está disponible
+        if mascota.estado != 'Disponible':
+            messages.error(request, "La mascota ya ha sido adoptada")
+            return redirect('crear_adopcion')
+
+        persona = Persona.objects.get(id=persona_id)
+
+        Adopcion.objects.create(
+            persona=persona,
+            mascota=mascota,
+            observaciones=observaciones
+        )
+
+        # Cambiar estado automáticamente
+        mascota.estado = 'Adoptado'
+        mascota.save()
+
+        messages.success(request, "Adopción registrada exitosamente")
+        return redirect('lista_adopciones')
+    else:
+        return redirect('crear_adopcion')
+
+
+# Al eliminar una adopción
+def eliminarAdopcion(request, id):
+    adopcion = Adopcion.objects.get(id=id)
+    mascota = adopcion.mascota
+
+    adopcion.delete()
+
+    # Restaurar estado de la mascota
+    mascota.estado = 'Disponible'
+    mascota.save()
+
+    messages.success(request, "Adopción eliminada y estado de mascota actualizado")
+    return redirect('lista_adopciones')
