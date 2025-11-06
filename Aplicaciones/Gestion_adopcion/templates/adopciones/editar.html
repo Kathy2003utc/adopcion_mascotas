@@ -1,0 +1,68 @@
+{% extends 'personas/plantilla.html' %}
+{% load static %}
+{% block contenido %}
+
+<br><br><br>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-lg border-0 rounded-4">
+      <div class="card-body p-5" style="background-color: #feffff;">
+        <h2 class="text-center text-success mb-4">Editar Adopción</h2>
+        <hr class="mb-4">
+        <form id="frm_editar_adopcion" method="post" action="{% url 'actualizar_adopcion' %}">
+          {% csrf_token %}
+          <input type="hidden" name="id" value="{{ adopcionEditar.id }}">
+
+          <label for="persona">Persona</label>
+          <select name="persona" id="persona" class="form-control" required>
+            {% for p in Personas %}
+              <option value="{{ p.id }}" {% if p.id == adopcionEditar.persona.id %}selected{% endif %}>
+                {{ p.nombres }} {{ p.apellidos }}
+              </option>
+            {% endfor %}
+          </select>
+          <br>
+
+          <label for="mascota">Mascota</label>
+          <select name="mascota" id="mascota" class="form-control" required>
+            {% for m in Mascotas %}
+              <option value="{{ m.id }}" {% if m.id == adopcionEditar.mascota.id %}selected{% endif %}>
+                {{ m.nombre }} ({{ m.especie }})
+              </option>
+            {% endfor %}
+          </select>
+          <br>
+
+          <label for="observaciones">Observaciones</label>
+          <textarea name="observaciones" id="observaciones" class="form-control">{{ adopcionEditar.observaciones }}</textarea>
+          <br>
+
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success btn-lg px-4 me-2 rounded-pill shadow">
+              <i class="fa fa-save me-1"></i> Actualizar
+            </button>
+            <a href="{% url 'lista_adopciones' %}" class="btn btn-outline-danger btn-lg px-4 rounded-pill shadow">
+              <i class="fa fa-times me-1"></i> Cancelar
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$("#frm_editar_adopcion").validate({
+  rules: {
+    "persona": { required: true },
+    "mascota": { required: true }
+  },
+  messages: {
+    "persona": { required: "Seleccione la persona" },
+    "mascota": { required: "Seleccione la mascota" }
+  }
+});
+</script>
+
+<br><br><br>
+{% endblock %}
