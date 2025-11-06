@@ -12,7 +12,7 @@
         <form id="frm_nueva_adopcion" method="post" action="{% url 'guardar_adopcion' %}">
           {% csrf_token %}
 
-          <label for="persona">Persona</label>
+          <label for="persona">Usuario</label>
           <select name="persona" id="persona" class="form-control" required>
             <option value="">Seleccione...</option>
             {% for p in Personas %}

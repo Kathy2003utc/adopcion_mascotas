@@ -13,7 +13,7 @@
           {% csrf_token %}
           <input type="hidden" name="id" value="{{ adopcionEditar.id }}">
 
-          <label for="persona">Persona</label>
+          <label for="persona">Usuario</label>
           <select name="persona" id="persona" class="form-control" required>
             {% for p in Personas %}
               <option value="{{ p.id }}" {% if p.id == adopcionEditar.persona.id %}selected{% endif %}>
