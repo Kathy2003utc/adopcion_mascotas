@@ -4,11 +4,17 @@
 
 <br><br><br>
 <div class="row justify-content-center">
+
   <div class="col-md-8">
+
     <div class="card shadow-lg border-0 rounded-4">
+
       <div class="card-body p-5" style="background-color: #feffff;">
+
         <h2 class="text-center text-success mb-4">Nueva Persona</h2>
+
         <hr class="mb-4">
+        
         <form id="frm_nueva_persona" method="post" action="{% url 'guardar_persona' %}">
           {% csrf_token %}
 
