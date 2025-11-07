@@ -55,10 +55,12 @@ $("#frm_nueva_adopcion").validate({
   rules: {
     "persona": { required: true },
     "mascota": { required: true },
+    "observaciones": { required: true },
   },
   messages: {
     "persona": { required: "Seleccione la persona" },
-    "mascota": { required: "Seleccione la mascota" }
+    "mascota": { required: "Seleccione la mascota" },
+    "observaciones": { required: "Escriba las observaciones" }
   }
 });
 </script>
