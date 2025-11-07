@@ -1,73 +1,52 @@
 {% extends 'personas/plantilla.html' %}
 {% load static %}
-{% block contenido %}
+{% block contenido %} 
 
 <br><br><br>
 <div class="row justify-content-center">
-  <div class="col-md-8">
-    <div class="card shadow-lg border-0 rounded-4">
-      <div class="card-body p-5" style="background-color: #feffff;">
-        <h2 class="text-center text-success mb-4">Nueva Mascota</h2>
-        <hr class="mb-4">
 
-        <form id="frm_nueva_mascota" method="post" action="{% url 'guardar_mascota' %}" enctype="multipart/form-data">
+  <div class="col-md-8">
+
+    <div class="card shadow-lg border-0 rounded-4">
+
+      <div class="card-body p-5" style="background-color: #feffff;">
+
+        <h2 class="text-center text-success mb-4">Nueva Persona</h2>
+
+        <hr class="mb-4">
+        
+        <form id="frm_nueva_persona" method="post" action="{% url 'guardar_persona' %}">
           {% csrf_token %}
 
-          <label for="nombre">Nombre</label>
-          <input type="text" name="nombre" id="nombre" class="form-control">
+          <label for="nombres">Nombres</label>
+          <input type="text" name="nombres" id="nombres" class="form-control" required>
           <br>
 
-          <label for="especie">Especie</label>
-          <select name="especie" id="especie" class="form-control">
-            <option value="">Seleccione...</option>
-            <option value="Perro">Perro</option>
-            <option value="Gato">Gato</option>
-            <option value="Otro">Otro</option>
-          </select>
+          <label for="apellidos">Apellidos</label>
+          <input type="text" name="apellidos" id="apellidos" class="form-control" required>
           <br>
 
-          <label for="raza">Raza</label>
-          <input type="text" name="raza" id="raza" class="form-control">
+          <label for="cedula">Cédula</label>
+          <input type="text" name="cedula" id="cedula" class="form-control" maxlength="10" required>
           <br>
 
-          <label for="edad_valor">Edad</label>
-          <div class="input-group">
-            <input type="number" name="edad_valor" id="edad_valor" class="form-control" min="1" max="10" step="1">
-            <select name="edad_unidad" id="edad_unidad" class="form-select" style="max-width: 140px;">
-              <option value="">Seleccione...</option>
-              <option value="meses">Meses</option>
-              <option value="años">Años</option>
-            </select>
-          </div>
-          <small class="text-muted">Máximo 10 años o 11 meses.</small>
-          <br><br>
-
-          <label for="sexo">Sexo</label>
-          <select name="sexo" id="sexo" class="form-control">
-            <option value="">Seleccione...</option>
-            <option value="Macho">Macho</option>
-            <option value="Hembra">Hembra</option>
-          </select>
+          <label for="telefono">Teléfono</label>
+          <input type="text" name="telefono" id="telefono" class="form-control">
           <br>
 
-          <label for="descripcion">Descripción</label>
-          <textarea name="descripcion" id="descripcion" class="form-control" rows="3"></textarea>
+          <label for="direccion">Dirección</label>
+          <input type="text" name="direccion" id="direccion" class="form-control">
           <br>
 
-          <input type="hidden" name="estado" value="Disponible">
-          <label for="estado">Estado</label>
-          <input type="text" class="form-control" value="Disponible" readonly>
-          <br>
-
-          <label for="foto">Foto</label>
-          <input id="foto" name="foto" type="file" class="file" accept="image/*">
+          <label for="correo">Correo Electrónico</label>
+          <input type="email" name="correo" id="correo" class="form-control" required>
           <br>
 
           <div class="text-center mt-4">
             <button class="btn btn-success btn-lg px-4 me-2 rounded-pill shadow" type="submit">
               <i class="fa fa-save me-1"></i> Guardar
             </button>
-            <a href="{% url 'lista_mascotas' %}" class="btn btn-outline-danger btn-lg px-4 rounded-pill shadow" role="button">
+            <a href="{% url 'lista_personas' %}" class="btn btn-outline-danger btn-lg px-4 rounded-pill shadow">
               <i class="fa fa-times me-1"></i> Cancelar
             </a>
           </div>
@@ -78,219 +57,36 @@
 </div>
 
 <script>
-$(document).ready(function () {
-  // Inicializar FileInput
-  $("#foto").fileinput({
-    language: "es",
-    allowedFileExtensions: ["png", "jpg", "jpeg", "gif"],
-    showCaption: false,
-    dropZoneEnabled: true,
-    showClose: false
-  });
+// Nueva funcion de personas 
 
-  // Validaciones del formulario
-  $("#frm_nueva_mascota").validate({
+
+$(document).ready(function () {
+  $("#frm_nueva_persona").validate({
     rules: {
-      "nombre": { required: true, minlength: 2 },
-      "especie": { required: true },
-      "raza": { required: true, minlength: 2 },
-      "edad_valor": {
-        required: true,
-        number: true,
-        min: 1,
-        max: function() {
-          return $("#edad_unidad").val() === "meses" ? 11 : 10;
-        }
-      },
-      "edad_unidad": { required: true },
-      "sexo": { required: true },
-      "descripcion": { required: true, minlength: 5 },
-      "foto": { required: true, extension: "jpg|jpeg|png|gif" }
+      "nombres": { required: true, minlength: 2 },
+      "apellidos": { required: true, minlength: 2 },
+      "cedula": { required: true, digits: true, minlength: 10, maxlength: 10},
+      "telefono": { required: true, digits: true, minlength: 10, maxlength: 10 },
+      "direccion": { required: true, minlength: 5 },
+      "correo": { required: true, email: true }
     },
     messages: {
-      "nombre": { 
-        required: "Ingrese el nombre de la mascota", 
-        minlength: "El nombre debe tener al menos 2 caracteres" 
+      "nombres": { required: "Ingrese los nombres", minlength: "Mínimo 2 caracteres" },
+      "apellidos": { required: "Ingrese los apellidos", minlength: "Mínimo 2 caracteres" },
+      "cedula": { 
+        required: "Ingrese la cédula",
+        digits: "Sólo números",
+        minlength: "Debe tener 10 dígitos", 
+        maxlength: "Debe tener 10 dígitos",
       },
-      "especie": { required: "Seleccione la especie" },
-      "raza": { 
-        required: "Ingrese la raza", 
-        minlength: "La raza debe tener al menos 2 caracteres"
+      "telefono": { 
+        required: "Ingrese el teléfono",
+        digits: "Sólo números",
+        minlength: "Debe tener 10 dígitos", 
+        maxlength: "Debe tener 10 dígitos",
       },
-      "edad_valor": {
-        required: "Ingrese la edad de la mascota",
-        number: "Ingrese un número válido",
-        min: "La edad mínima es 1",
-        max: "Edad máxima permitida superada"
-      },
-      "edad_unidad": { required: "Seleccione la unidad de edad" },
-      "sexo": { required: "Seleccione el sexo" },
-      "descripcion": { 
-        required: "Ingrese una breve descripción de la mascota", 
-        minlength: "La descripción debe tener al menos 5 caracteres"
-      },
-      "foto": { 
-        required: "Debe subir una foto de la mascota", 
-        extension: "Solo se permiten archivos JPG, JPEG, PNG o GIF"
-      }
-    },
-    errorElement: "div",
-    errorClass: "text-danger mt-1",
-    highlight: function (element) {
-      $(element).addClass("is-invalid");
-    },
-    unhighlight: function (element) {
-      $(element).removeClass("is-invalid");
-    }
-  });
-});
-</script>
-
-<br><br><br>
-{% endblock %}
-{% extends 'personas/plantilla.html' %}
-{% load static %}
-{% block contenido %}
-
-<br><br><br>
-<div class="row justify-content-center">
-  <div class="col-md-8">
-    <div class="card shadow-lg border-0 rounded-4">
-      <div class="card-body p-5" style="background-color: #feffff;">
-        <h2 class="text-center text-success mb-4">Nueva Mascota</h2>
-        <hr class="mb-4">
-
-        <form id="frm_nueva_mascota" method="post" action="{% url 'guardar_mascota' %}" enctype="multipart/form-data">
-          {% csrf_token %}
-
-          <label for="nombre">Nombre</label>
-          <input type="text" name="nombre" id="nombre" class="form-control">
-          <br>
-
-          <label for="especie">Especie</label>
-          <select name="especie" id="especie" class="form-control">
-            <option value="">Seleccione...</option>
-            <option value="Perro">Perro</option>
-            <option value="Gato">Gato</option>
-            <option value="Otro">Otro</option>
-          </select>
-          <br>
-
-          <label for="raza">Raza</label>
-          <input type="text" name="raza" id="raza" class="form-control">
-          <br>
-
-          <label for="edad_valor">Edad</label>
-          <div class="input-group">
-            <input type="number" name="edad_valor" id="edad_valor" class="form-control" min="1" max="10" step="1">
-            <select name="edad_unidad" id="edad_unidad" class="form-select" style="max-width: 140px;">
-              <option value="">Seleccione...</option>
-              <option value="meses">Meses</option>
-              <option value="años">Años</option>
-            </select>
-          </div>
-          <small class="text-muted">Máximo 10 años o 11 meses.</small>
-          <br><br>
-
-          <label for="sexo">Sexo</label>
-          <select name="sexo" id="sexo" class="form-control">
-            <option value="">Seleccione...</option>
-            <option value="Macho">Macho</option>
-            <option value="Hembra">Hembra</option>
-          </select>
-          <br>
-
-          <label for="descripcion">Descripción</label>
-          <textarea name="descripcion" id="descripcion" class="form-control" rows="3"></textarea>
-          <br>
-
-          <input type="hidden" name="estado" value="Disponible">
-          <label for="estado">Estado</label>
-          <input type="text" class="form-control" value="Disponible" readonly>
-          <br>
-
-          <label for="foto">Foto</label>
-          <input id="foto" name="foto" type="file" class="file" accept="image/*">
-          <br>
-
-          <div class="text-center mt-4">
-            <button class="btn btn-success btn-lg px-4 me-2 rounded-pill shadow" type="submit">
-              <i class="fa fa-save me-1"></i> Guardar
-            </button>
-            <a href="{% url 'lista_mascotas' %}" class="btn btn-outline-danger btn-lg px-4 rounded-pill shadow" role="button">
-              <i class="fa fa-times me-1"></i> Cancelar
-            </a>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-$(document).ready(function () {
-  // Inicializar FileInput
-  $("#foto").fileinput({
-    language: "es",
-    allowedFileExtensions: ["png", "jpg", "jpeg", "gif"],
-    showCaption: false,
-    dropZoneEnabled: true,
-    showClose: false
-  });
-
-  // Validaciones del formulario
-  $("#frm_nueva_mascota").validate({
-    rules: {
-      "nombre": { required: true, minlength: 2 },
-      "especie": { required: true },
-      "raza": { required: true, minlength: 2 },
-      "edad_valor": {
-        required: true,
-        number: true,
-        min: 1,
-        max: function() {
-          return $("#edad_unidad").val() === "meses" ? 11 : 10;
-        }
-      },
-      "edad_unidad": { required: true },
-      "sexo": { required: true },
-      "descripcion": { required: true, minlength: 5 },
-      "foto": { required: true, extension: "jpg|jpeg|png|gif" }
-    },
-    messages: {
-      "nombre": { 
-        required: "Ingrese el nombre de la mascota", 
-        minlength: "El nombre debe tener al menos 2 caracteres" 
-      },
-      "especie": { required: "Seleccione la especie" },
-      "raza": { 
-        required: "Ingrese la raza", 
-        minlength: "La raza debe tener al menos 2 caracteres"
-      },
-      "edad_valor": {
-        required: "Ingrese la edad de la mascota",
-        number: "Ingrese un número válido",
-        min: "La edad mínima es 1",
-        max: "Edad máxima permitida superada"
-      },
-      "edad_unidad": { required: "Seleccione la unidad de edad" },
-      "sexo": { required: "Seleccione el sexo" },
-      "descripcion": { 
-        required: "Ingrese una breve descripción de la mascota", 
-        minlength: "La descripción debe tener al menos 5 caracteres"
-      },
-      "foto": { 
-        required: "Debe subir una foto de la mascota", 
-        extension: "Solo se permiten archivos JPG, JPEG, PNG o GIF"
-      }
-    },
-    errorElement: "div",
-    errorClass: "text-danger mt-1",
-    highlight: function (element) {
-      $(element).addClass("is-invalid");
-    },
-    unhighlight: function (element) {
-      $(element).removeClass("is-invalid");
+      "direccion": { required: "Ingrese la dirección", minlength: "Mínimo 5 caracteres" },
+      "correo": { required: "Ingrese el correo", email: "Ingrese un correo válido" }
     }
   });
 });
