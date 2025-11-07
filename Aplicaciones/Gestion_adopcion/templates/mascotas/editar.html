@@ -113,6 +113,7 @@ $(document).ready(function () {
       "descripcion": { required: true, minlength: 5 },
       "foto": { extension: "jpg|jpeg|png|gif" }
     },
+
     messages: {
       "nombre": { 
         required: "Ingrese el nombre de la mascota", 
@@ -147,6 +148,7 @@ $(document).ready(function () {
     unhighlight: function (element) {
       $(element).removeClass("is-invalid");
     }
+    
   });
 });
 </script>
