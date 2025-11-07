@@ -1,3 +1,4 @@
+CAMBIA LA PLANTILLA PON ESTA:
 {% load static %}
 
 <!DOCTYPE html>
@@ -113,11 +114,6 @@
             </button>
           </div>
           <!-- End Logo Header -->
-
-
-
-
-
         </div>
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
@@ -190,9 +186,6 @@
               </div>
               <button class="topbar-toggler more">
                 <i class="gg-more-vertical-alt"></i>
-
-
-
               </button>
             </div>
             <!-- End Logo Header -->
@@ -214,6 +207,7 @@
               <p class="text-center">Mikaela Betancourt</p>
               <p class="text-center">Boris Pardo</p>
               <p class="text-center">Katherin Pico</p>
+              
             </div>
 
             <div class="col-md-4 ">
@@ -222,11 +216,10 @@
               <p class="text-center">borispardo@gmail.com</p>
               <p class="text-center">kathy.jim06.cc@gmail.com</p>
               
-              
             </div>
             <div class="col-md-4 ">
               <h3 class="text-center">Fecha:</h3>
-              <p class="text-center">Latacunga, 07 de Noviembre del 2026</p>
+              <p class="text-center">Latacunga, 07 de noviembre del 2025</p>
             </div>
           </div>
         </footer>
@@ -290,19 +283,25 @@
         fillColor: "rgba(255, 165, 52, .14)",
       });
     </script>
-    
-<!--   CMensaje de confirmacion  -->
-    {% if messages %}
+
+      {% if messages %}
       {% for mensaje in messages %}
-        <script>
-            swal({
-              title: "CONFIRMACIÓN",
-              text: "{{ mensaje }}",
-              icon: "success",
-            });
-        </script>
+      <script>
+        
+          Swal.fire({
+            title: "{% if mensaje.tags == 'success' %}Éxito{% elif mensaje.tags == 'error' %}Error{% elif mensaje.tags == 'warning' %}Alerta{% else %}Información{% endif %}",
+            text: "{{ mensaje|escapejs }}",
+            icon: "{% if mensaje.tags == 'success' %}success{% elif mensaje.tags == 'error' %}error{% elif mensaje.tags == 'warning' %}warning{% else %}info{% endif %}",
+            confirmButtonText: "Aceptar",
+            customClass: {
+              popup: 'swal2-border-radius'
+            }
+          });
+        
+      </script>
       {% endfor %}
-    {% endif %}
+      {% endif %}
+
 
     <style>
       .error{
