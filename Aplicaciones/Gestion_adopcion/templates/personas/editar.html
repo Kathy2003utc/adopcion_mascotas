@@ -26,7 +26,7 @@
           <br>
 
           <label for="telefono">Teléfono</label>
-          <input type="text" name="telefono" id="telefono" class="form-control" value="{{ personaEditar.telefono }}">
+          <input type="text" name="telefono" id="telefono" class="form-control" maxlength="10" value="{{ personaEditar.telefono }}">
           <br>
 
           <label for="direccion">Dirección</label>
@@ -57,12 +57,16 @@ $("#frm_editar_persona").validate({
     "nombres": { required: true, minlength: 2 },
     "apellidos": { required: true, minlength: 2 },
     "cedula": { required: true, minlength: 10, maxlength: 10 },
+    "direccion": { required: true, minlength: 5 },
+    "telefono": { required: true, minlength: 10, step:1 },
     "correo": { required: true, email: true }
   },
   messages: {
     "nombres": { required: "Ingrese los nombres" },
     "apellidos": { required: "Ingrese los apellidos" },
     "cedula": { required: "Ingrese la cédula", minlength: "Debe tener 10 dígitos", maxlength: "Debe tener 10 dígitos" },
+    "direccion": { required: "Ingrese la dirección", minlength: "Debe tener minimo 5 caracteres" },
+    "telefono": { required: "Ingrese el teléfono", minlength: "Debe tener 10 dígitos", step: "Debe ser un número" },
     "correo": { required: "Ingrese el correo", email: "Ingrese un correo válido" }
   }
 });
