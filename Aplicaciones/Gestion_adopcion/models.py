@@ -16,7 +16,7 @@ class Persona(models.Model):
 class Mascota(models.Model):
     nombre = models.CharField(max_length=100)
 
-    especie = models.CharField(max_length=50, choices=[
+    especie = models.CharField(max_length=100, choices=[
         ('Perro', 'Perro'),
         ('Gato', 'Gato'),
         ('Otro', 'Otro'),
@@ -27,7 +27,7 @@ class Mascota(models.Model):
     edad_valor = models.PositiveIntegerField(help_text="Edad numérica de la mascota")
 
     edad_unidad = models.CharField(
-        max_length=10,
+        max_length=100,
         choices=[
             ('meses', 'Meses'),
             ('años', 'Años'),
@@ -57,7 +57,7 @@ class Mascota(models.Model):
 
     @property
     def edad_completa(self):
-        """Propiedad útil para mostrar la edad completa en templates"""
+        """Propiedad útil para mostrar la edad completa en templates."""
         return f"{self.edad_valor} {self.edad_unidad}"
 
 
