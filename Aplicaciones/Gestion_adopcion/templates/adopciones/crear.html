@@ -2,6 +2,8 @@
 {% load static %}
 {% block contenido %}
 
+<!-- Ecrear html -->
+
 <br><br><br>
 <div class="row justify-content-center">
   <div class="col-md-8">
@@ -11,6 +13,9 @@
         <hr class="mb-4">
         <form id="frm_nueva_adopcion" method="post" action="{% url 'guardar_adopcion' %}">
           {% csrf_token %}
+
+
+
 
           <label for="persona">Usuario</label>
           <select name="persona" id="persona" class="form-control" required>
@@ -49,6 +54,8 @@
     </div>
   </div>
 </div>
+
+
 
 <script>
 $("#frm_nueva_adopcion").validate({
