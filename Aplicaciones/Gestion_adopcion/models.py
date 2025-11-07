@@ -15,13 +15,17 @@ class Persona(models.Model):
 
 class Mascota(models.Model):
     nombre = models.CharField(max_length=100)
+
     especie = models.CharField(max_length=50, choices=[
         ('Perro', 'Perro'),
         ('Gato', 'Gato'),
         ('Otro', 'Otro'),
     ])
+
     raza = models.CharField(max_length=100, blank=True, null=True)
+
     edad_valor = models.PositiveIntegerField(help_text="Edad numérica de la mascota")
+
     edad_unidad = models.CharField(
         max_length=10,
         choices=[
@@ -30,17 +34,22 @@ class Mascota(models.Model):
         ],
         default='años' 
     )
+
     sexo = models.CharField(max_length=10, choices=[
         ('Macho', 'Macho'),
         ('Hembra', 'Hembra'),
     ])
+
     descripcion = models.TextField(blank=True, null=True)
+
     estado = models.CharField(max_length=20, choices=[
         ('Disponible', 'Disponible'),
         ('Adoptado', 'Adoptado'),
         ('En revisión', 'En revisión'),
     ], default='Disponible')
+
     fecha_ingreso = models.DateField(auto_now_add=True)
+    
     foto = models.ImageField(upload_to='mascotas/', blank=True, null=True)
 
     def __str__(self):
