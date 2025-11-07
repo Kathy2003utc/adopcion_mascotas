@@ -2,60 +2,61 @@
 {% load static %}
 
 {% block contenido %}
-<section class="container py-5">
+<section class="container-fluid py-5">
   <div class="row justify-content-center">
-    <div class="col-lg-12">
+    <div class="col-lg-11">
       <h1 class="mb-4 text-center">Listado de Mascotas</h1>
+
       <div class="text-end mb-3">
         <a href="{% url 'crear_mascota' %}" class="btn btn-success">
           <i class="bi bi-plus-circle"></i> Agregar Mascota
         </a>
       </div>
 
-      <table id="tbl_mascotas" class="table table-bordered table-striped table-hover align-middle">
+      <table id="tbl_mascotas" class="table table-bordered table-striped align-middle">
         <thead class="table-success text-center">
           <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Especie</th>
-            <th>Raza</th>
-            <th>Edad</th>
-            <th>Sexo</th>
-            <th>Descripción</th>
-            <th>Estado</th>
-            <th>Fecha Ingreso</th>
-            <th>Foto</th>
-            <th>Acciones</th>
+            <th style="width: 4%;">ID</th>
+            <th style="width: 10%;">Nombre</th>
+            <th style="width: 10%;">Especie</th>
+            <th style="width: 10%;">Raza</th>
+            <th style="width: 6%;">Edad</th>
+            <th style="width: 7%;">Sexo</th>
+            <th style="width: 20%;">Descripción</th>
+            <th style="width: 8%;">Estado</th>
+            <th style="width: 10%;">Fecha Ingreso</th>
+            <th style="width: 8%;">Foto</th>
+            <th style="width: 7%;">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {% for mascota in Mascotas %}
-            <tr>
-              <td>{{ mascota.id }}</td>
-              <td>{{ mascota.nombre }}</td>
-              <td>{{ mascota.especie }}</td>
-              <td>{{ mascota.raza|default:"-" }}</td>
-              <td>{{ mascota.edad }}</td>
-              <td>{{ mascota.sexo }}</td>
-              <td>{{ mascota.descripcion|default:"-" }}</td>
-              <td>{{ mascota.estado }}</td>
-              <td>{{ mascota.fecha_ingreso }}</td>
-              <td>
-                {% if mascota.foto %}
-                  <img src="{{ mascota.foto.url }}" alt="{{ mascota.nombre }}" width="60">
-                {% else %}
-                  -
-                {% endif %}
-              </td>
-              <td class="text-center">
-                <a href="{% url 'editar_mascota' mascota.id %}" class="btn btn-outline-warning btn-sm" title="Editar">
-                  <i class="bi bi-pencil"></i>
-                </a>
-                <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="confirmarEliminacion('{{ mascota.id }}')">
-                  <i class="bi bi-trash"></i>
-                </a>
-              </td>
-            </tr>
+          <tr>
+            <td class="text-center">{{ mascota.id }}</td>
+            <td>{{ mascota.nombre }}</td>
+            <td>{{ mascota.especie }}</td>
+            <td>{{ mascota.raza|default:"-" }}</td>
+            <td class="text-center">{{ mascota.edad_completa }}</td>
+            <td class="text-center">{{ mascota.sexo }}</td>
+            <td style="white-space: normal; text-align: justify;">{{ mascota.descripcion|default:"-" }}</td>
+            <td class="text-center">{{ mascota.estado }}</td>
+            <td class="text-center">{{ mascota.fecha_ingreso }}</td>
+            <td class="text-center">
+              {% if mascota.foto %}
+                <img src="{{ mascota.foto.url }}" alt="{{ mascota.nombre }}" class="img-fluid rounded" style="max-width: 55px; height: 55px; object-fit: cover;">
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td class="text-center">
+              <a href="{% url 'editar_mascota' mascota.id %}" class="btn btn-outline-warning btn-sm" title="Editar">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="confirmarEliminacion('{{ mascota.id }}')">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
+          </tr>
           {% endfor %}
         </tbody>
       </table>
@@ -84,19 +85,44 @@ function confirmarEliminacion(id) {
 $('#tbl_mascotas').DataTable({
   dom: 'Bfrtip',
   buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-  language: { url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json' }
+  responsive: true,
+  autoWidth: false,
+  language: { url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json' },
+  columnDefs: [
+    { targets: [0,4,5,7,8,9,10], className: 'text-center' },
+    { targets: 6, className: 'text-start' }
+  ]
 });
 </script>
 
 <style>
-table#tbl_mascotas {
-  width: 100%;
-  table-layout: auto;
+/* Ajuste general y sin fondo */
+#tbl_mascotas {
+  width: 100% !important;
+  table-layout: fixed;
+  font-size: 0.9rem;
+  background: transparent !important;
 }
-table#tbl_mascotas th, table#tbl_mascotas td {
+
+/* Evita que se corten los títulos */
+#tbl_mascotas th {
   white-space: nowrap;
   text-align: center;
+  font-weight: 600;
 }
-</style>
 
+/* Ajuste del contenido */
+#tbl_mascotas td {
+  vertical-align: middle;
+  overflow-wrap: break-word;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Permitir varias líneas solo en descripción */
+#tbl_mascotas td:nth-child(7) {
+  white-space: normal !important;
+}
+
+</style>
 {% endblock %}

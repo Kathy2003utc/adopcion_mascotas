@@ -21,7 +21,15 @@ class Mascota(models.Model):
         ('Otro', 'Otro'),
     ])
     raza = models.CharField(max_length=100, blank=True, null=True)
-    edad = models.PositiveIntegerField(help_text="Edad en años aproximada")
+    edad_valor = models.PositiveIntegerField(help_text="Edad numérica de la mascota")
+    edad_unidad = models.CharField(
+        max_length=10,
+        choices=[
+            ('meses', 'Meses'),
+            ('años', 'Años'),
+        ],
+        default='años' 
+    )
     sexo = models.CharField(max_length=10, choices=[
         ('Macho', 'Macho'),
         ('Hembra', 'Hembra'),
@@ -37,6 +45,12 @@ class Mascota(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.especie})"
+
+    @property
+    def edad_completa(self):
+        """Propiedad útil para mostrar la edad completa en templates"""
+        return f"{self.edad_valor} {self.edad_unidad}"
+
 
 
 class Adopcion(models.Model):

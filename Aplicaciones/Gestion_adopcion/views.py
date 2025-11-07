@@ -112,26 +112,32 @@ def guardarMascota(request):
         nombre = request.POST['nombre']
         especie = request.POST['especie']
         raza = request.POST.get('raza', '')
-        edad = request.POST['edad']
+        edad_valor = request.POST.get('edad_valor', '')
+        edad_unidad = request.POST.get('edad_unidad', '')
         sexo = request.POST['sexo']
         descripcion = request.POST.get('descripcion', '')
-        estado = request.POST.get('estado', 'Disponible')
         foto = request.FILES.get('foto', None)
+
+        if not edad_valor or not edad_unidad:
+            messages.error(request, "Debe ingresar la edad y la unidad.")
+            return redirect('crear_mascota')
 
         Mascota.objects.create(
             nombre=nombre,
             especie=especie,
             raza=raza,
-            edad=edad,
+            edad_valor=edad_valor,
+            edad_unidad=edad_unidad,
             sexo=sexo,
             descripcion=descripcion,
-            estado=estado,
+            estado='Disponible',
             foto=foto
         )
         messages.success(request, "Mascota registrada exitosamente")
         return redirect('lista_mascotas')
     else:
         return redirect('crear_mascota')
+
 
 # Eliminar mascota
 def eliminarMascota(request, id):
@@ -160,82 +166,30 @@ def procesarEdicionMascota(request):
         nombre = request.POST['nombre']
         especie = request.POST['especie']
         raza = request.POST.get('raza', '')
-        edad = request.POST['edad']
-        sexo = request.POST['sexo']
-        descripcion = request.POST.get('descripcion', '')
-        estado = request.POST.get('estado', 'Disponible')
-        foto = request.FILES.get('foto', None)
-
-        mascota = Mascota.objects.get(id=id)
-        mascota.nombre = nombre
-        mascota.especie = especie
-        mascota.raza = raza
-        mascota.edad = edad
-        mascota.sexo = sexo
-        mascota.descripcion = descripcion
-        mascota.estado = estado
-        if foto:
-            mascota.foto = foto
-        mascota.save()
-
-        messages.success(request, "Mascota actualizada exitosamente")
-        return redirect('lista_mascotas')
-    else:
-        return redirect('lista_mascotas')
-    
-# Guardar nueva mascota
-def guardarMascota(request):
-    if request.method == "POST":
-        nombre = request.POST['nombre']
-        especie = request.POST['especie']
-        raza = request.POST.get('raza', '')
-        edad = request.POST['edad']
-        sexo = request.POST['sexo']
-        descripcion = request.POST.get('descripcion', '')
-        foto = request.FILES.get('foto', None)
-
-        # Siempre disponible al crear
-        Mascota.objects.create(
-            nombre=nombre,
-            especie=especie,
-            raza=raza,
-            edad=edad,
-            sexo=sexo,
-            descripcion=descripcion,
-            estado='Disponible',
-            foto=foto
-        )
-        messages.success(request, "Mascota registrada exitosamente")
-        return redirect('lista_mascotas')
-    else:
-        return redirect('crear_mascota')
-
-
-# Procesar edición de mascota
-def procesarEdicionMascota(request):
-    if request.method == "POST":
-        id = request.POST['id']
-        nombre = request.POST['nombre']
-        especie = request.POST['especie']
-        raza = request.POST.get('raza', '')
-        edad = request.POST['edad']
+        edad_valor = request.POST.get('edad_valor', '')
+        edad_unidad = request.POST.get('edad_unidad', '')
         sexo = request.POST['sexo']
         descripcion = request.POST.get('descripcion', '')
         foto = request.FILES.get('foto', None)
 
         mascota = Mascota.objects.get(id=id)
+
+        if not edad_valor or not edad_unidad:
+            messages.error(request, "Debe ingresar la edad y la unidad.")
+            return redirect('editar_mascota', id=id)
+
         mascota.nombre = nombre
         mascota.especie = especie
         mascota.raza = raza
-        mascota.edad = edad
+        mascota.edad_valor = edad_valor
+        mascota.edad_unidad = edad_unidad
         mascota.sexo = sexo
         mascota.descripcion = descripcion
 
-        # No permitir cambiar el estado manualmente, se gestiona automáticamente
         if foto:
             mascota.foto = foto
 
-        # Actualizar estado automáticamente según si tiene adopción
+        # Actualiza el estado según si tiene adopción
         if hasattr(mascota, 'adopcion'):
             mascota.estado = 'Adoptado'
         else:
@@ -247,12 +201,7 @@ def procesarEdicionMascota(request):
     else:
         return redirect('lista_mascotas')
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Persona, Mascota, Adopcion
-from django.db import IntegrityError
-
-
+    
 # LISTAR ADOPCIONES
 def listaAdopciones(request):
     adopciones = Adopcion.objects.all()
